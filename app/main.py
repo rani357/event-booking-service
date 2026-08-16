@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+import os
 from pydantic import BaseModel
 from pymongo import MongoClient
 import httpx
@@ -11,14 +12,23 @@ app = FastAPI(
 )
 
 
-client = MongoClient("mongodb://localhost:27017")
+client = MongoClient(
+    os.getenv("MONGO_URL", "mongodb://localhost:27017")
+)
 
 db = client["booking_db"]
 bookings_collection = db["bookings"]
 
 
-USER_SERVICE_URL = "http://127.0.0.1:8001"
-EVENT_SERVICE_URL = "http://127.0.0.1:8002"
+USER_SERVICE_URL = os.getenv(
+    "USER_SERVICE_URL",
+    "http://127.0.0.1:8001"
+)
+
+EVENT_SERVICE_URL = os.getenv(
+    "EVENT_SERVICE_URL",
+    "http://127.0.0.1:8002"
+)
 
 
 class BookingCreate(BaseModel):
